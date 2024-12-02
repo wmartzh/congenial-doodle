@@ -1,12 +1,14 @@
 name: Create Release
 
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches:
-      - main 
+      - main
 
 jobs:
   release:
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'release')
     runs-on: ubuntu-latest
     permissions: 
       contents: write
@@ -14,19 +16,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Extract branch name
-        id: extract_branch
+      - name: Get PR title
+        id: get_pr_title
         run: |
-          echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
+          echo "PR_TITLE=${{ github.event.pull_request.title }}" >> $GITHUB_OUTPUT
 
       - name: Create Release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.extract_branch.outputs.BRANCH_NAME }}
-          release_name: Release ${{ steps.extract_branch.outputs.BRANCH_NAME }}
+          tag_name: ${{ steps.get_pr_title.outputs.PR_TITLE }}
+          release_name: Release ${{ steps.get_pr_title.outputs.PR_TITLE }}
           body: |
-            Automatically generated release notes for ${{ steps.extract_branch.outputs.BRANCH_NAME }}.
+            Automatically generated release notes for ${{ steps.get_pr_title.outputs.PR_TITLE }}.
           draft: false
           prerelease: false
