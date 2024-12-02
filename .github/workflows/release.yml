@@ -16,19 +16,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Get PR title
-        id: get_pr_title
+      - name: Sanitize PR title 
+        id: sanitize_pr_title
         run: |
-          echo "PR_TITLE=${{ github.event.pull_request.title }}" >> $GITHUB_OUTPUT
+          SANITIZED_TITLE=$(echo "${{ github.event.pull_request.title }}" | sed 's/[^a-zA-Z0-9._-]/-/g')
+          echo "PR_TITLE=$SANITIZED_TITLE" >> $GITHUB_OUTPUT
 
       - name: Create Release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.get_pr_title.outputs.PR_TITLE }}
-          release_name: Release ${{ steps.get_pr_title.outputs.PR_TITLE }}
+          tag_name: ${{ steps.sanitize_pr_title.outputs.PR_TITLE }}
+          release_name: Release ${{ steps.sanitize_pr_title.outputs.PR_TITLE }}
           body: |
-            Automatically generated release notes for ${{ steps.get_pr_title.outputs.PR_TITLE }}.
+            Automatically generated release notes for ${{ steps.sanitize_pr_title.outputs.PR_TITLE }}.
           draft: false
           prerelease: false
