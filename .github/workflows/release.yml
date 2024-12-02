@@ -46,7 +46,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ steps.get_date.outputs.YEAR }}.${{ steps.get_date.outputs.MONTH_NUMBER }}.${{ steps.count_releases.outputs.result }}
-          release_name: ${{ github.event.repository.name }} ${{ steps.get_date.outputs.YEAR }} - W${{ steps.get_date.outputs.WEEK_NUMBER }} Latest
+          release_name: REPOSITORY_NAME ${{ steps.get_date.outputs.YEAR }} - W${{ steps.get_date.outputs.WEEK_NUMBER }}
           body: |
             Automatically generated release notes for ${{ github.event.repository.name }} ${{ steps.get_date.outputs.YEAR }} - W${{ steps.get_date.outputs.WEEK_NUMBER }}.
           draft: false
