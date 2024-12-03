@@ -47,6 +47,7 @@ jobs:
         id: generate-changelog
         uses: saadmk11/changelog-ci@v1.1.2
         with:
+          config_file: changelog-ci-config.yaml
           token: ${{ secrets.GITHUB_TOKEN }}
           # Customize the changelog format if needed (see the action's documentation)
 
@@ -66,7 +67,7 @@ jobs:
           body: |
             ${{ steps.generate-changelog.outputs.changelog }}
 
-            **Contributors:**
+            # Contributors
             ${{ steps.get-contributors.outputs.CONTRIBUTORS }}
           draft: false
           prerelease: false
