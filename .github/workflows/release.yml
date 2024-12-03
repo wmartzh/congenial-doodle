@@ -5,8 +5,9 @@ on:
     types: [closed]
     branches:
       - main
+
 env:
-  PROJECT_NAME: My Awesome Project
+  PROJECT_NAME: My Awesome Project # Replace with your project name
 
 jobs:
   release:
@@ -42,14 +43,20 @@ jobs:
             });
             return thisMonthReleases.length;
 
+      - name: Generate Changelog
+        id: generate-changelog
+        uses: fabienjuif/github-action-generate-changelog@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }} # Customize the changelog format if needed (see the action's documentation)
+
       - name: Create Release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ steps.get_date.outputs.YEAR }}.${{ steps.get_date.outputs.MONTH_NUMBER }}.${{ steps.count_releases.outputs.result }}
-          release_name: ${{ env.PROJECT_NAME }} ${{ steps.get_date.outputs.YEAR }} - W${{ steps.get_date.outputs.WEEK_NUMBER }}
+          release_name: ${{ env.PROJECT_NAME }} ${{ steps.get_date.outputs.YEAR }} - W${{ steps.get_date.outputs.WEEK_NUMBER }} Latest
           body: |
-            Automatically generated release notes for ${{ github.event.repository.name }} ${{ steps.get_date.outputs.YEAR }} - W${{ steps.get_date.outputs.WEEK_NUMBER }}.
+            ${{ steps.generate-changelog.outputs.changelog }}
           draft: false
           prerelease: false
