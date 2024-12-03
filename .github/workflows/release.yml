@@ -45,9 +45,10 @@ jobs:
 
       - name: Generate Changelog
         id: generate-changelog
-        uses: fabienjuif/github-action-generate-changelog@v2
+        uses: trilom/action-github-release-changelog@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }} # Customize the changelog format if needed (see the action's documentation)
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # Customize the changelog format if needed (see the action's documentation)
 
       - name: Create Release
         uses: actions/create-release@v1
