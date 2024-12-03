@@ -52,6 +52,6 @@ jobs:
         with:
           tag_name: v${{ steps.get_date.outputs.YEAR }}.${{ steps.get_date.outputs.MONTH_NUMBER }}.${{ steps.count_releases.outputs.result }}
           release_name: ${{ env.PROJECT_NAME }} ${{ steps.get_date.outputs.YEAR }} - W${{ steps.get_date.outputs.WEEK_NUMBER }} Latest
-          generate_related_notes: true
+          generate_release_notes: true
           draft: false
           prerelease: false
