@@ -7,7 +7,7 @@ on:
       - main
 
 env:
-  PROJECT_NAME: My Awesome Project  # Replace with your project name
+  PROJECT_NAME: My Awesome Project # Replace with your project name
 
 jobs:
   release:
@@ -47,7 +47,14 @@ jobs:
         id: generate-changelog
         uses: saadmk11/changelog-ci@v1.1.2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # Customize the changelog format if needed (see the action's documentation)
+
+      - name: Get Contributors
+        id: get-contributors
+        run: |
+          CONTRIBUTORS=$(git log --pretty="%an" | sort -u | paste -s -d ", ")
+          echo "CONTRIBUTORS=$CONTRIBUTORS" >> $GITHUB_OUTPUT
 
       - name: Create Release
         uses: actions/create-release@v1
@@ -58,5 +65,8 @@ jobs:
           release_name: ${{ env.PROJECT_NAME }} ${{ steps.get_date.outputs.YEAR }} - W${{ steps.get_date.outputs.WEEK_NUMBER }} Latest
           body: |
             ${{ steps.generate-changelog.outputs.changelog }}
+
+            **Contributors:**
+            ${{ steps.get-contributors.outputs.CONTRIBUTORS }}
           draft: false
           prerelease: false
