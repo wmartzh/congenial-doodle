@@ -48,6 +48,7 @@ jobs:
         uses: saadmk11/changelog-ci@v1.1.2
         with:
           config_file: changelog-ci-config.yaml
+          release_version: v${{ steps.get_date.outputs.YEAR }}.${{ steps.get_date.outputs.MONTH_NUMBER }}.${{ steps.count_releases.outputs.result }}
           token: ${{ secrets.GITHUB_TOKEN }}
           # Customize the changelog format if needed (see the action's documentation)
 
