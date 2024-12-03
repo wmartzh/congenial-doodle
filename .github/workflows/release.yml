@@ -42,21 +42,8 @@ jobs:
                      createdAt.getFullYear() === parseInt('${{ steps.get_date.outputs.YEAR }}');
             });
             return thisMonthReleases.length;
-
-      - name: Generate Changelog
-        id: generate-changelog
-        uses: saadmk11/changelog-ci@v1.1.2
-        with:
-          config_file: changelog-ci-config.yaml
-          release_version: v${{ steps.get_date.outputs.YEAR }}.${{ steps.get_date.outputs.MONTH_NUMBER }}.${{ steps.count_releases.outputs.result }}
-          token: ${{ secrets.GITHUB_TOKEN }}
           # Customize the changelog format if needed (see the action's documentation)
 
-      - name: Get Contributors
-        id: get-contributors
-        run: |
-          CONTRIBUTORS=$(git log --pretty="%an" | sort -u | paste -s -d ", ")
-          echo "CONTRIBUTORS=$CONTRIBUTORS" >> $GITHUB_OUTPUT
 
       - name: Create Release
         uses: actions/create-release@v1
@@ -65,10 +52,6 @@ jobs:
         with:
           tag_name: v${{ steps.get_date.outputs.YEAR }}.${{ steps.get_date.outputs.MONTH_NUMBER }}.${{ steps.count_releases.outputs.result }}
           release_name: ${{ env.PROJECT_NAME }} ${{ steps.get_date.outputs.YEAR }} - W${{ steps.get_date.outputs.WEEK_NUMBER }} Latest
-          body: |
-            ${{ steps.generate-changelog.outputs.changelog }}
-
-            # Contributors
-            ${{ steps.get-contributors.outputs.CONTRIBUTORS }}
+          generate_related_notes: true
           draft: false
           prerelease: false
