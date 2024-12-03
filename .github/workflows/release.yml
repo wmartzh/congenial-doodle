@@ -7,7 +7,7 @@ on:
       - main
 
 env:
-  PROJECT_NAME: My Awesome Project # Replace with your project name
+  PROJECT_NAME: My Awesome Project  # Replace with your project name
 
 jobs:
   release:
@@ -45,10 +45,9 @@ jobs:
 
       - name: Generate Changelog
         id: generate-changelog
-        uses: trilom/action-github-release-changelog@v1
+        uses: metcalfc/changelog-generator@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          # Customize the changelog format if needed (see the action's documentation)
 
       - name: Create Release
         uses: actions/create-release@v1
