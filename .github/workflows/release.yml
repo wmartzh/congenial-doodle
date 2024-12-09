@@ -2,16 +2,21 @@ name: Create Release
 
 on:
   pull_request:
-    types: [closed]
+    types: [opened, edited, synchronize] # TODO: Change to closed when ready to publish
     branches:
-      - main
+      - develop # TODO: Change to main when ready to publish
 
 env:
-  PROJECT_NAME: My Awesome Project # Replace with your project name
+  PROJECT_NAME: Predator2
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+permissions:
+  contents: read
 
 jobs:
   release:
-    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'release')
+    #TODO: Uncomment when ready to publish and remove labels from the triggergs
+    # if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'release')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -32,26 +37,19 @@ jobs:
         with:
           script: |
             const { repo } = context.repo;
-            const releases = await github.rest.repos.listReleases({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-            });
-            const thisMonthReleases = releases.data.filter(release => {
-              const createdAt = new Date(release.created_at);
-              return createdAt.getMonth() + 1 === parseInt('${{ steps.get_date.outputs.MONTH_NUMBER }}') &&
-                     createdAt.getFullYear() === parseInt('${{ steps.get_date.outputs.YEAR }}');
-            });
-            return thisMonthReleases.length;
-          # Customize the changelog format if needed (see the action's documentation)
-
-
+             const releases = await github.rest.repos.listReleases({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+             });
+             const thisMonthReleases = releases.data.filter(release => {
+               const createdAt = new Date(release.created_at);
+               return createdAt.getMonth() + 1 === parseInt('${{ steps.get_date.outputs.MONTH_NUMBER }}') &&
+                      createdAt.getFullYear() === parseInt('${{ steps.get_date.outputs.YEAR }}');
+             });
+             return thisMonthReleases.length;
       - name: Create Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: release-drafter/release-drafter@v6
         with:
-          tag_name: v${{ steps.get_date.outputs.YEAR }}.${{ steps.get_date.outputs.MONTH_NUMBER }}.${{ steps.count_releases.outputs.result }}
-          release_name: ${{ env.PROJECT_NAME }} ${{ steps.get_date.outputs.YEAR }} - W${{ steps.get_date.outputs.WEEK_NUMBER }} Latest
-          generateReleaseNotes: true
-          draft: false
-          prerelease: false
+          name: ${{ env.PROJECT_NAME }} ${{ steps.get_date.outputs.YEAR }} - W${{ steps.get_date.outputs.WEEK_NUMBER }}
+          tag: v${{ steps.get_date.outputs.YEAR }}.${{ steps.get_date.outputs.MONTH_NUMBER }}.${{ steps.count_releases.outputs.result }}
+          publish: false
