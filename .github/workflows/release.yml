@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [opened, edited, synchronize] # TODO: Change to closed when ready to publish
     branches:
-      - develop # TODO: Change to main when ready to publish
+      - main # TODO: Change to main when ready to publish
 
 env:
   PROJECT_NAME: Predator2
