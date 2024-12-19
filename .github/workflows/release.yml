@@ -50,6 +50,7 @@ jobs:
       - name: Create Release
         uses: release-drafter/release-drafter@v6
         with:
+          commitish: main
           name: ${{ env.PROJECT_NAME }} ${{ steps.get_date.outputs.YEAR }} - W${{ steps.get_date.outputs.WEEK_NUMBER }}
           tag: v${{ steps.get_date.outputs.YEAR }}.${{ steps.get_date.outputs.MONTH_NUMBER }}.${{ steps.count_releases.outputs.result }}
-          publish: false
+          publish: true
